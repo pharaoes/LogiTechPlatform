@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/LogiTech.BuildingBlocks/LogiTech.BuildingBlocks.csproj" />
+  </Folder>
+  <Folder Name="/src/Services.Identity/">
+    <Project Path="src/Services.Identity/LogiTech.Services.Identity.API/LogiTech.Services.Identity.API.csproj" />
+    <Project Path="src/Services.Identity/LogiTech.Services.Identity.Application/LogiTech.Services.Identity.Application.csproj" />
+    <Project Path="src/Services.Identity/LogiTech.Services.Identity.Domain/LogiTech.Services.Identity.Domain.csproj" />
+    <Project Path="src/Services.Identity/LogiTech.Services.Identity.Infrastructure/LogiTech.Services.Identity.Infrastructure.csproj" />
+  </Folder>
+</Solution>
