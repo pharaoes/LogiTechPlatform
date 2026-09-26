@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\..\LogiTech.BuildingBlocks\LogiTech.BuildingBlocks.csproj" />
     <ProjectReference Include="..\LogiTech.Services.Identity.Domain\LogiTech.Services.Identity.Domain.csproj" />
   </ItemGroup>
 

@@ -1,41 +1,47 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using LogiTech.Services.Identity.Application.Authentication.Commands.Register;
+using LogiTech.Services.Identity.Application.Common.Interfaces;
+using LogiTech.Services.Identity.Infrastructure.Authentication;
+using LogiTech.Services.Identity.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// 1. إضافة الخدمات والـ Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+
+// 2. تسجيل خدمات الـ Infrastructure والـ Application
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddScoped<RegisterCommandHandler>();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// 3. تفعيل Swagger
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.MapOpenApi();
-}
-
-app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "LogiTech Identity API v1");
+    c.RoutePrefix = "swagger";
+});
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    return new[] { "Warm", "Cool", "Hot" };
 })
 .WithName("GetWeatherForecast");
 
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+// >>> أضف هذا السطر هنا لتحويل الصفحة الرئيسية تلقائياً إلى السواجر <<<
+app.MapGet("/", async context =>
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+    context.Response.Redirect("/swagger");
+    await Task.CompletedTask;
+});
+
+app.MapControllers();
+
+app.Run();
